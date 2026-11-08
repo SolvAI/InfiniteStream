@@ -1,0 +1,19 @@
+# Upstream code and model weights (fetched by setup.sh)
+/Causal-Forcing/
+*.safetensors
+*.pth
+*.pt
+
+# Local add-ons
+/loras/
+
+# Run outputs and logs
+/stream_out/
+/bench_out/
+/bench_results.jsonl
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/

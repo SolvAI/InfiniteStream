@@ -1,0 +1,11 @@
+InfiniteStream
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This project builds on the following work, which is downloaded by setup.sh and is
+not redistributed in this repository:
+
+- Causal Forcing (https://github.com/thu-ml/Causal-Forcing), Apache License 2.0.
+  stream.py contains a modified version of its KV-cached self-attention: the shifting
+  cache is replaced by a ring buffer, and RoPE factors are passed in per frame.
+- Wan 2.1 (https://github.com/Wan-Video/Wan2.1), Apache License 2.0.
+- TAEHV (https://github.com/madebyollin/taehv), MIT License.
