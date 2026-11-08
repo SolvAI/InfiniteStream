@@ -1,10 +1,10 @@
 <div align="center">
 
-# InfiniteStream
+# InfiniteStream: Real-Time Infinite AI Video
 
 ### Type a sentence. The video changes. It keeps going.
 
-Endless, text-steerable AI video, generated live at 832×480 on a single RTX 4090.
+**InfiniteStream** is an open-source, real-time text-to-video generator. It makes endless AI video at 832×480 on a single RTX 4090, and you steer it live by typing prompts.
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.10-3776AB)
@@ -14,20 +14,22 @@ Endless, text-steerable AI video, generated live at 832×480 on a single RTX 409
 </div>
 
 <p align="center">
-  <img src="assets/steer_world.webp" width="49%" alt="One continuous shot steered by text from a sunrise forest through snow, aurora and wildfire to cherry blossoms">
-  <img src="assets/steer_person.webp" width="49%" alt="A man walking while text prompts change the street around him from autumn to snow to neon rain">
+  <img src="assets/steer_world.webp" width="49%" alt="Real-time AI video steered by text in one continuous shot, from a sunrise forest through snow, aurora and wildfire to cherry blossoms">
+  <img src="assets/steer_person.webp" width="49%" alt="Real-time text-to-video of a man walking while prompts change the street around him from autumn to snow to neon rain">
 </p>
 <p align="center">
-  <img src="assets/coral.webp" width="32%" alt="Sea turtle over a coral reef">
-  <img src="assets/neon.webp" width="32%" alt="Neon-lit alley in the rain">
-  <img src="assets/car.webp" width="32%" alt="Red sports car on a coastal road at sunset">
-  <img src="assets/raincoat.webp" width="32%" alt="Woman in a yellow raincoat on a rainy street at night">
-  <img src="assets/blacksmith.webp" width="32%" alt="Blacksmith hammering glowing steel">
-  <img src="assets/sax.webp" width="32%" alt="Saxophonist on a jazz club stage">
+  <img src="assets/coral.webp" width="32%" alt="AI video of a sea turtle over a coral reef">
+  <img src="assets/neon.webp" width="32%" alt="AI video of a neon-lit alley in the rain">
+  <img src="assets/car.webp" width="32%" alt="AI video of a red sports car on a coastal road at sunset">
+  <img src="assets/raincoat.webp" width="32%" alt="AI video of a woman in a yellow raincoat on a rainy street at night">
+  <img src="assets/blacksmith.webp" width="32%" alt="AI video of a blacksmith hammering glowing steel">
+  <img src="assets/sax.webp" width="32%" alt="AI video of a saxophonist on a jazz club stage">
 </p>
 <p align="center"><sub>Real output at the default settings, downscaled and compressed for this page, with no interpolation or retouching. Each clip is the pick of 2–3 seeds and runs 7–25 s; captions abbreviate the prompts. Clips with people use a community fine-tune and LoRA loaded with <code>--lora</code>.</sub></p>
 
-## Why it's different
+<p align="center"><b>⭐ Want to see where this goes? Star the repo. It's how other people find it.</b></p>
+
+## Real-time AI video on your own GPU
 
 - **Faster than playback on a consumer GPU.** 17.7 fps generated against 16 fps played, held for 10 straight minutes on one RTX 4090.
 - **No clip length.** Most local video models render a fixed clip and stop. A rolling attention window keeps this one going for as long as you leave it running.
@@ -35,7 +37,7 @@ Endless, text-steerable AI video, generated live at 832×480 on a single RTX 409
 - **Yours, in a browser tab.** Everything runs on your machine: no cloud, no queue, no account.
 - **Bring your own style.** Any Wan 2.1 T2V 1.3B LoRA or fine-tune merges in at boot, with no per-frame cost.
 
-## Quick start
+## Quick start: run it locally
 
 You need Linux, an NVIDIA GPU with 24 GB of VRAM (tested on an RTX 4090), Python 3.10 and about 25 GB of disk space.
 
@@ -53,7 +55,7 @@ Type a prompt and press Enter. Long, descriptive prompts work best.
 - **Unrelated scenes** (a forest to a city) blend more slowly and can take 10 s or more.
 - **Reset canvas** starts over from your prompt with a hard cut, then steering carries on as usual. Use it for big jumps, or when an artifact won't go away.
 
-## How it works
+## How real-time infinite video generation works
 
 ```mermaid
 flowchart LR
@@ -78,7 +80,7 @@ The generator is [Causal Forcing++](https://github.com/thu-ml/Causal-Forcing), a
 | **Sink regeneration** | The anchor is regenerated from the new prompt, which is what makes the scene actually change. It also refreshes every 8 s to limit drift. |
 | **Speed stack** | FP8 weights (torchao), `torch.compile` on the dense layers, and the [TAEHV](https://github.com/madebyollin/taehv) tiny decoder in place of the Wan VAE. |
 
-## Performance
+## Performance on an RTX 4090
 
 Measured on one RTX 4090. Real time needs 16 fps, which is 250 ms per 4-frame block.
 
@@ -107,7 +109,7 @@ Headroom is about 10%, so the stream needs the GPU to itself. Sharing it with an
 | `--lora` | none | `PATH[:SCALE]` of a LoRA or fine-tune. Repeatable. |
 | `--host`, `--port` | `127.0.0.1`, `8000` | There is no authentication, so only expose it on networks you trust. |
 
-### Control it from anything
+### Control the stream over HTTP
 
 ```bash
 curl -X POST localhost:8000/prompt -d 'A storm rolls in over the sea'
@@ -117,7 +119,7 @@ curl localhost:8000/status      # fps, buffer, stalls, VRAM
 
 The video itself is plain MJPEG at `http://localhost:8000/stream`.
 
-### LoRAs and fine-tunes
+### Use Wan 2.1 LoRAs and fine-tunes
 
 ```bash
 python live.py --lora path/to/style.safetensors:0.8
@@ -141,6 +143,28 @@ This writes the video, per-frame timing and image statistics to `stream_out/<nam
 - **Only tested on an RTX 4090 under Linux.** The setup script installs a Linux x86-64 build of FlashAttention.
 - **There is a hard stop at about 4.5 hours,** where the temporal position table runs out.
 
+## FAQ
+
+### Can a consumer GPU generate AI video in real time?
+
+Yes, on an RTX 4090. InfiniteStream generates 17.7 fps against the 16 fps it plays back, held over a 10-minute test. Other cards are untested.
+
+### How long can the video run?
+
+Up to about 4.5 hours, when the temporal position table runs out. Long runs lose quality well before that; see [Known limits](#known-limits).
+
+### Does it need the cloud, an account or an API key?
+
+No. Generation runs entirely on your machine, and the only download is the model weights at install.
+
+### Which model does it use?
+
+Causal Forcing++, a 2-step, frame-by-frame distillation of Wan 2.1 T2V 1.3B.
+
+### Will it run with less than 24 GB of VRAM?
+
+Untested. It allocates about 15 GB and reserves 20–23 GB, so smaller cards would need a lower-VRAM profile, which is on the list below.
+
 ## Contributing
 
 Issues and pull requests are welcome. The most useful things right now:
@@ -148,6 +172,8 @@ Issues and pull requests are welcome. The most useful things right now:
 - **Benchmarks on other GPUs.** Open an issue with your card and the fps from the status line.
 - **Better long-run quality,** especially a way to stop foreground artifacts from surviving prompt changes.
 - **A lower-VRAM profile.**
+
+If InfiniteStream was useful, or just fun to watch, a ⭐ helps more people find it.
 
 ## Credits
 
